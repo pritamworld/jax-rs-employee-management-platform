@@ -21,15 +21,15 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
+      - name: CodeQL init
+        uses: github/codeql-action/init@v4
+        with:
+          languages: java
       - name: Unit tests and package
         run: mvn -B clean verify
       - name: Dependency vulnerability scan
         if: ${{ env.NVD_API_KEY != '' }}
         run: mvn -B org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -DnvdApiKey=$NVD_API_KEY
-      - name: CodeQL init
-        uses: github/codeql-action/init@v4
-        with:
-          languages: java
       - name: CodeQL analyze
         uses: github/codeql-action/analyze@v3
       - name: Upload WAR
