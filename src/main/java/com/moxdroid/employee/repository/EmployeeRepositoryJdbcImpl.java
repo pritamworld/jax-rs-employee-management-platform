@@ -9,11 +9,11 @@ import java.sql.*;
 import java.util.*;
 import java.sql.Date;
 
-public class EmployeeRepositoryJdbc implements EmployeeRepository {
+public class EmployeeRepositoryJdbcImpl implements EmployeeRepository {
     private final DataSource ds;
 
     @Inject
-    public EmployeeRepositoryJdbc(DataSource ds) {
+    public EmployeeRepositoryJdbcImpl(DataSource ds) {
         this.ds = ds;
     }
 

@@ -12,7 +12,7 @@ public class DependencyBinder extends AbstractBinder {
     @Override
     protected void configure() {
         bind(DatabaseConfig.dataSource()).to(DataSource.class);
-        bind(EmployeeRepositoryJdbc.class).to(EmployeeRepository.class);
+        bind(EmployeeRepositoryJdbcImpl.class).to(EmployeeRepository.class);
         bind(EmployeeServiceImpl.class).to(EmployeeService.class);
         bind(AuthRepositoryJdbc.class).to(AuthRepository.class);
         bind(AuthRepositoryJdbc.class).to(AuthRepository.class);

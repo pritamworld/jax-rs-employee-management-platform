@@ -24,8 +24,9 @@ public class RequestLoggingFilter implements ContainerRequestFilter, ContainerRe
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
         Object id = req.getProperty(KEY);
-        if (id != null)
+        if (id != null) {
             res.getHeaders().putSingle("X-Correlation-ID", id);
+        }
         LOG.info("request_id={} status={}", id, res.getStatus());
     }
 }

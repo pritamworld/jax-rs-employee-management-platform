@@ -34,8 +34,10 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
             status = 409;
             error = "CONFLICT";
             message = ex.getMessage();
-        } else
+        } else {
             LOG.error("Unhandled request failure", ex);
+        }
+        
         if (ex instanceof SQLException) {
             status = 500;
             error = "DATABASE_ERROR";
