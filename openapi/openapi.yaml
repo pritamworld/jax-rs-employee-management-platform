@@ -1,0 +1,150 @@
+openapi: 3.0.3
+info:
+  title: Employee Management API
+  version: 1.0.0
+  description: Jersey/JAX-RS employee CRUD and local authentication API.
+servers:
+  - url: http://localhost:8080/api/v1
+tags:
+  - name: Authentication
+  - name: Employees
+  - name: Health
+paths:
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register a standard USER account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RegisterRequest'}
+            example: {username: jane.doe, email: jane@example.com, password: "Example-Long-Password-123!"}
+      responses:
+        '201': {description: Account created; returns a bearer token}
+        '400': {description: Invalid request}
+        '409': {description: Username/email already exists}
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Log in and receive a JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/LoginRequest'}
+            example: {username: jane.doe, password: "Example-Long-Password-123!"}
+      responses:
+        '200':
+          description: Signed access token
+          content:
+            application/json:
+              example: {accessToken: eyJ...redacted, tokenType: Bearer, expiresIn: 1800, role: USER, username: jane.doe}
+        '400': {description: Invalid credentials}
+  /auth/health:
+    get:
+      tags: [Authentication]
+      summary: Authentication service health
+      responses:
+        '200': {description: Service is up}
+  /health:
+    get:
+      tags: [Health]
+      summary: Liveness health endpoint
+      responses:
+        '200': {description: Service is up}
+  /employees:
+    get:
+      tags: [Employees]
+      security: [{BearerAuth: []}]
+      summary: List employees
+      parameters:
+        - {name: page, in: query, schema: {type: integer, minimum: 0, default: 0}}
+        - {name: size, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        '200':
+          description: Employee page (simple list in starter implementation)
+          content:
+            application/json:
+              example:
+                - {employeeId: 1, employeeNumber: EMP1001, firstName: John, lastName: Smith, email: john@example.com, department: IT, salary: 95000, status: ACTIVE}
+        '401': {description: Missing or invalid bearer token}
+    post:
+      tags: [Employees]
+      security: [{BearerAuth: []}]
+      summary: Create employee (ADMIN only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/EmployeeRequest'}
+            example: {employeeNumber: EMP1002, firstName: David, lastName: Brown, email: david@example.com, department: Engineering, salary: 105000, status: ACTIVE}
+      responses:
+        '201': {description: Employee created}
+        '400': {description: Invalid request}
+        '401': {description: Missing or invalid bearer token}
+        '403': {description: ADMIN role required}
+        '409': {description: Duplicate email or employee number}
+  /employees/{id}:
+    parameters:
+      - {name: id, in: path, required: true, schema: {type: integer, format: int64}}
+    get:
+      tags: [Employees]
+      security: [{BearerAuth: []}]
+      summary: Get employee by ID
+      responses:
+        '200': {description: Employee}
+        '404': {description: Not found}
+    put:
+      tags: [Employees]
+      security: [{BearerAuth: []}]
+      summary: Replace employee fields (ADMIN only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/EmployeeRequest'}
+      responses:
+        '200': {description: Updated employee}
+        '400': {description: Invalid request}
+        '403': {description: ADMIN role required}
+        '404': {description: Not found}
+    delete:
+      tags: [Employees]
+      security: [{BearerAuth: []}]
+      summary: Delete employee (ADMIN only)
+      responses:
+        '204': {description: Deleted}
+        '403': {description: ADMIN role required}
+        '404': {description: Not found}
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username: {type: string, minLength: 3, maxLength: 50, example: jane.doe}
+        email: {type: string, format: email, example: jane@example.com}
+        password: {type: string, minLength: 12, format: password}
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: {type: string, example: jane.doe}
+        password: {type: string, format: password}
+    EmployeeRequest:
+      type: object
+      required: [employeeNumber, firstName, lastName, email, salary]
+      properties:
+        employeeNumber: {type: string, maxLength: 30, example: EMP1002}
+        firstName: {type: string, maxLength: 100, example: David}
+        lastName: {type: string, maxLength: 100, example: Brown}
+        email: {type: string, format: email, maxLength: 150, example: david@example.com}
+        department: {type: string, maxLength: 100, example: Engineering}
+        salary: {type: number, format: double, minimum: 0, example: 105000}
+        status: {type: string, enum: [ACTIVE, INACTIVE], default: ACTIVE}
