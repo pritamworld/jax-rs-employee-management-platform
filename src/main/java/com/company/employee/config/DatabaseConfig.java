@@ -6,7 +6,10 @@ import javax.sql.DataSource;
 
 public final class DatabaseConfig {
     private static HikariDataSource ds;
-    private DatabaseConfig() {}
+
+    private DatabaseConfig() {
+    }
+
     public static synchronized DataSource dataSource() {
         if (ds == null) {
             HikariConfig c = new HikariConfig();
@@ -23,5 +26,11 @@ public final class DatabaseConfig {
         }
         return ds;
     }
-    public static synchronized void close() { if (ds != null) { ds.close(); ds = null; } }
+
+    public static synchronized void close() {
+        if (ds != null) {
+            ds.close();
+            ds = null;
+        }
+    }
 }
