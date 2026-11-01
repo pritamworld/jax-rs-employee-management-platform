@@ -125,6 +125,27 @@ Create these in **Settings -> Secrets and variables -> Actions**:
 - `AZURE_VM_HOST`: public DNS/IP of the VM
 - `AZURE_VM_USER`: dedicated deploy account
 - `AZURE_VM_SSH_KEY`: private key corresponding to VM authorized key
+- `NVD_API_KEY`: The `build-test-scan` job failed in the OWASP dependency-check step. The workflow passed no NVD API key, and the NVD data update failed with `Invalid API Key, length of 0 too short…`, followed by `NoDataException: No documents exist` because there was no local data to fall back on.
+
+Changes (`.github/workflows/ci-cd.yml`)
+
+Key plumbing: a job-level `NVD_API_KEY` env is populated from `secrets.NVD_API_KEY` and passed to Maven as `-DnvdApiKey=$NVD_API_KEY`.
+Gating: the scan step runs only when the secret is set, so runs without the secret no longer fail.
+```
+env:
+  NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+...
+
+- name: Dependency vulnerability scan
+  if: ${{ env.NVD_API_KEY != '' }}
+  run: mvn -B org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -DnvdApiKey=$NVD_API_KEY
+  ```
+
+ **Review notes**
+
+- A repository secret named `NVD_API_KEY` must be created. Free keys are available at <https://nvd.nist.gov/developers/request-an-api-key>. Until it exists, the CVE scan is silently skipped.
+- Secrets aren't passed to workflows triggered by fork PRs, so the scan is also skipped for those.
+- The env is job-level because a step's own env is not visible to its if condition.
 
 Never put SSH private keys, database passwords, JWT secrets or cloud credentials in workflow YAML. Restrict the GitHub environment `uat` with reviewers if your plan supports environment protection rules.
 
