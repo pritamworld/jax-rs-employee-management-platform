@@ -2,7 +2,7 @@
 # Ubuntu 22.04/24.04 VM bootstrap. Run as a sudo-capable admin.
 set -euo pipefail
 sudo apt-get update
-sudo apt-get install -y temurin-21-jdk maven tomcat10 curl unzip jq prometheus-node-exporter
+sudo apt-get install -y temurin-25-jdk maven tomcat10 curl unzip jq prometheus-node-exporter
 sudo systemctl enable --now tomcat10
 sudo systemctl enable --now prometheus-node-exporter
 sudo install -d -o root -g root -m 0755 /var/backups/employee-management

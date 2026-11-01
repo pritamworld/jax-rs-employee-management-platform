@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
+import java.sql.Date;
 
 public class EmployeeRepositoryJdbc implements EmployeeRepository {
     private final DataSource ds;

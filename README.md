@@ -1,4 +1,4 @@
-# Employee Management API — Java 21, Jersey, Oracle, JWT and Azure VM CI/CD
+# Employee Management API — Java 25, Jersey, Oracle, JWT and Azure VM CI/CD
 
 A layered JAX-RS/Jersey WAR starter with Oracle JDBC/HikariCP, HK2 constructor injection, local username/password authentication, signed JWTs, role-based write restrictions, OpenAPI, Postman, CI security scanning, and a sample Azure Linux VM deployment pipeline.
 
@@ -24,7 +24,7 @@ Cross-cutting: HK2 dependency injection, JWT auth, ADMIN role check for writes, 
 
 ## Requirements
 
-- JDK 21
+- JDK 25
 - Maven 3.9+
 - Oracle Free / Oracle Database with a PDB reachable by the application
 - Git
@@ -112,7 +112,7 @@ The OpenAPI file is `openapi/openapi.yaml`. Open it in Swagger Editor or import 
 ## 8. GitHub Actions CI/CD
 
 The workflow `.github/workflows/ci-cd.yml` runs on pull requests and pushes to `main`:
-1. Java 21 setup + Maven cache
+1. Java 25 setup + Maven cache
 2. `mvn clean verify`
 3. OWASP Dependency-Check (fails on CVSS >= 7; first run may take several minutes)
 4. GitHub CodeQL
@@ -132,7 +132,7 @@ Never put SSH private keys, database passwords, JWT secrets or cloud credentials
 
 1. Provision Ubuntu 22.04/24.04 in Azure.
 2. Allow inbound SSH only from approved IPs; expose 80/443 via a reverse proxy. Avoid exposing Oracle 1521 publicly.
-3. Install Java 21, Tomcat 10.1, and monitoring agent. The bootstrap script is a starting point; package availability differs by Ubuntu image. On systems where `tomcat10` or `temurin-21-jdk` is not available in the configured apt repositories, use the vendor's supported repository/package or install a pinned distribution manually.
+3. Install Java 25, Tomcat 10.1, and monitoring agent. The bootstrap script is a starting point; package availability differs by Ubuntu image. On systems where `tomcat10` or `temurin-25-jdk` is not available in the configured apt repositories, use the vendor's supported repository/package or install a pinned distribution manually.
 4. Install the deploy script at `/usr/local/sbin/deploy-employee-management`.
 5. Configure the deploy account with SSH access and tightly scoped sudo permission for that script only.
 6. Configure Tomcat service environment with DB and JWT secrets, then restart Tomcat.

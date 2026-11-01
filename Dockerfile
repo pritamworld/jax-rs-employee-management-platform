@@ -1,4 +1,4 @@
-FROM tomcat:10.1-jdk21-temurin
+FROM tomcat:10.1-jdk25-temurin
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 RUN rm -rf /usr/local/tomcat/webapps/*
 COPY target/employee-management.war /usr/local/tomcat/webapps/ROOT.war
