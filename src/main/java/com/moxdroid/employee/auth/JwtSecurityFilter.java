@@ -26,8 +26,9 @@ public class JwtSecurityFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext ctx) throws IOException {
         String path = ctx.getUriInfo().getPath();
         if (path.equals("auth/login") || path.equals("auth/register") || path.equals("auth/health")
-                || path.equals("health"))
+                || path.equals("health")) {
             return;
+        }
         String h = ctx.getHeaderString("Authorization");
         if (h == null || !h.startsWith("Bearer ")) {
             abort(ctx, 401, "Bearer token required");

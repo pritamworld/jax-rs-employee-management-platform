@@ -40,7 +40,8 @@ paths:
           content:
             application/json:
               example: {accessToken: eyJ...redacted, tokenType: Bearer, expiresIn: 1800, role: USER, username: jane.doe}
-        '400': {description: Invalid credentials}
+        '400': {description: Missing username or password}
+        '401': {description: Invalid username or password, or account disabled}
   /auth/health:
     get:
       tags: [Authentication]

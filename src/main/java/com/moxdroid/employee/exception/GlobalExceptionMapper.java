@@ -26,6 +26,10 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
             status = 404;
             error = "NOT_FOUND";
             message = ex.getMessage();
+        } else if (ex instanceof AuthenticationFailedException) {
+            status = 401;
+            error = "UNAUTHORIZED";
+            message = ex.getMessage();
         } else if (ex instanceof IllegalArgumentException || ex instanceof ConstraintViolationException) {
             status = 400;
             error = "BAD_REQUEST";

@@ -15,7 +15,6 @@ public class DependencyBinder extends AbstractBinder {
         bind(EmployeeRepositoryJdbcImpl.class).to(EmployeeRepository.class);
         bind(EmployeeServiceImpl.class).to(EmployeeService.class);
         bind(AuthRepositoryJdbc.class).to(AuthRepository.class);
-        bind(AuthRepositoryJdbc.class).to(AuthRepository.class);
         bind(AuthService.class).to(AuthService.class);
         bind(JwtService.class).to(JwtService.class);
     }
